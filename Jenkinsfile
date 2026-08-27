@@ -77,9 +77,7 @@ pipeline {
                 // Fix 3: Added allowEmptyResults to stop Jenkins from marking the build as an error when files are missing
                 junit testResults: '**/target/surefire-reports/*.xml',
                       allowEmptyResults: true
-            }
-
-        }
+                  }
 
         success {
             emailext (
