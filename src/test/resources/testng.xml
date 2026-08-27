@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<suite name="OrangeAppSuite" parallel="classes" thread-count="5">
+    <listeners>
+        <listener class-name="com.app.listeners.TestListener"/>
+    </listeners>
+    <test name="OrangeAppTest">
+        <classes>
+            <class name="com.app.tests.DummyClass"/>
+<!--            <class name="com.app.tests.DummyClass2"/>-->
+<!--            <class name = "com.app.tests.LoginPageTest" ></class>-->
+<!--            <class name="com.app.tests.LoginPageTest"/>-->
+<!--            <class name="com.app.tests.HomePageTest"/>-->
+        </classes>
+    </test>
+<!--    <test name="OrangeAppTest2">-->
+<!--        <classes>-->
+<!--            <class name="com.app.tests.DummyClass"/>-->
+<!--            <class name="com.app.tests.DummyClass2"/>-->
+<!--        </classes>-->
+<!--    </test>-->
+</suite>
