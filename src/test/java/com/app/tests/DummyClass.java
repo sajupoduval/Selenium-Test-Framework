@@ -15,7 +15,7 @@ public class DummyClass extends BaseClass {
         String title = getDriver().getTitle();
         ExtentManager.logStep("Verifying the test");
         assert title.equals("OrangeHRM"):"Test Failed - Title is not matching";
-        assert Objects.equals(title, "1OrangeHRM") :"Test Failed - Title Object is not matching";
+        assert Objects.equals(title, "OrangeHRM") :"Test Failed - Title Object is not matching";
 
         System.out.println("Test Passed - Title is matching");
         ExtentManager.logSkip("This test case is skipped");

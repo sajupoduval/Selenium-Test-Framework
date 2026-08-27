@@ -49,7 +49,7 @@ public class LoginPageTest extends BaseClass {
         SoftAssert softAssert = getSoftAssert();
         ExtentManager.logStep("Navigating to Login page entering invalid username and password");
         loginPage.login(username, password);
-        String expectedErrorMessage = "Invalid credentials1";
+        String expectedErrorMessage = "Invalid credentials";
 //        Assert.assertTrue(loginPage.verifyErrorMessage(expectedErrorMessage), "Test Failed: Invalid error message");
         softAssert.assertTrue(loginPage.verifyErrorMessage(expectedErrorMessage), "Test Failed: Invalid error message");
 
