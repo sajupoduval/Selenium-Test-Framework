@@ -26,7 +26,7 @@ public class ExtentManager {
     //Initialize Extent Report
     public synchronized static ExtentReports getReporter(){
         if(extent == null){
-            String reportPath = System.getProperty("user.dir")+"/src/test/resources/ExtentReport.html";
+            String reportPath = System.getProperty("user.dir")+"/src/test/resources/ExtentReport/ExtentReport.html";
             ExtentSparkReporter spark = new ExtentSparkReporter(reportPath);
             spark.config().setReportName("Automation Test Report");
             spark.config().setDocumentTitle("OrangeHRM report");
