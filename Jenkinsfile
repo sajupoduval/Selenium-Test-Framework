@@ -15,7 +15,7 @@ pipeline {
 //             steps {
 //                 script {
 //                     echo "Starting Selenium Grid with Docker Compose..."
-//                     bat "docker compose -f ${COMPOSE_PATH}\\docker-compose.yml up -d"
+//                     sh "docker compose -f ${COMPOSE_PATH}/docker-compose.yml up -d"
 //                     echo "Waiting for Selenium Grid to be ready..."
 //                     sleep 30 // Add a wait if needed
 //                 }
@@ -30,15 +30,15 @@ pipeline {
 
         stage('Build') {
             steps {
-//                 bat 'mvn clean install -DseleniumGrid=true'
-                bat 'mvn clean install'
+//                 sh 'mvn clean install -DseleniumGrid=true'
+                sh 'mvn clean install'
             }
         }
 
         stage('Test') {
             steps {
-//                 bat "mvn clean test -DseleniumGrid=true"
-                bat "mvn clean test"
+//                 sh "mvn clean test -DseleniumGrid=true"
+                sh "mvn clean test"
             }
         }
 
@@ -46,7 +46,7 @@ pipeline {
 //             steps {
 //                 script {
 //                     echo "Stopping Selenium Grid..."
-//                     bat "docker compose -f ${COMPOSE_PATH}\\docker-compose.yml down"
+//                     sh "docker compose -f ${COMPOSE_PATH}/docker-compose.yml down"
 //                 }
 //             }
 //         }
