@@ -24,7 +24,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/hverma22/Selenium-Test-Framework.git'
+                git branch: 'main', url: 'https://github.com/sajupoduval/Selenium-Test-Framework.git'
             }
         }
 
