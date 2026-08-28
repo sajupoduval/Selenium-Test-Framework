@@ -63,11 +63,11 @@ public class BaseClass {
         staticWait(2);
 
         Logger.info("Webdriver initialized and browser maximized");
-        Logger.trace("This is trace messge");
-        Logger.error("This is error message");
-        Logger.warn("This is warning message");
-        Logger.fatal("This is fatal message");
-        Logger.debug("This is debug message");
+//        Logger.trace("This is trace messge");
+//        Logger.error("This is error message");
+//        Logger.warn("This is warning message");
+//        Logger.fatal("This is fatal message");
+//        Logger.debug("This is debug message");
 
         //Initialize the action driver only once
 //        if(actionDriver == null){
@@ -86,7 +86,6 @@ public class BaseClass {
         if (seleniumGrid) {
             try{
                 if (browser.equalsIgnoreCase("chrome")) {
-                    System.out.println("Inside Selenium Grid");
                     ChromeOptions options = new ChromeOptions();
                     options.addArguments("--headless", "--disable-gpu", "--window-size=1920,1080");
                     driver.set(new RemoteWebDriver(new URL(gridURL), options));

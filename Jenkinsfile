@@ -5,7 +5,9 @@ pipeline {
         maven 'maven_3.9.9' //Jenkins tools reflect
     }
 
-     environment {
+     // 🛠️ MAC PATH FIX: This forces Jenkins to find Docker for ALL stages automatically
+    environment {
+         PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${env.PATH}"
          COMPOSE_PATH = "${WORKSPACE}/docker" // 🔁 Adjust if compose file is elsewhere
          SELENIUM_GRID = "true"
      }
@@ -14,15 +16,26 @@ pipeline {
          stage('Start Selenium Grid via Docker Compose') {
              steps {
                      script {
-                         withEnv(['PATH+DOCKER=/usr/local/bin']) {
-                             echo "Cleaning up any loose background instances..."
-                             sh "docker compose -f ${COMPOSE_PATH}/docker-compose.yml down"
+                         echo "Cleaning up any loose background instances..."
+                                             // This will now execute perfectly without 'command not found'
+                                             sh "docker compose -f ${COMPOSE_PATH}/docker-compose.yml down"
 
-                             echo "Starting Unified Infrastructure (Grid + App + DB)..."
-                             sh "docker compose -f ${COMPOSE_PATH}/docker-compose.yml up -d"
-                         }
-                         echo "Waiting 45 seconds for the local OrangeHRM database to fully initialize..."
-                         sleep 45
+                                             echo "Starting Unified Infrastructure (Grid + App + DB)..."
+                                             sh "docker compose -f ${COMPOSE_PATH}/docker-compose.yml up -d"
+
+                                             echo "Waiting 15 seconds for DB initialization..."
+                                             sleep 15
+
+                                             echo "Executing Silent Auto-Installer..."
+                                             sh """
+                                             docker exec -i orangehrm-app php /var/www/html/installer/index.php install \
+                                             --db_host=orangehrm-db \
+                                             --db_name=orangehrm_db \
+                                             --db_user=orangehrm_user \
+                                             --db_password=orangehrm_password \
+                                             --admin_user=Admin \
+                                             --admin_password=admin123
+                                             """
                      }
                  }
             }
