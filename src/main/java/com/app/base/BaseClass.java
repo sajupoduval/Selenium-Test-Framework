@@ -8,14 +8,19 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Parameters;
 import org.testng.asserts.SoftAssert;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.Duration;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -50,9 +55,10 @@ public class BaseClass {
     }
 
     @BeforeMethod
-    public synchronized void setup() throws IOException {
+    @Parameters("browser")
+    public synchronized void setup(String browser) throws IOException {
         System.out.println("Setting up webdriver for :" + this.getClass().getSimpleName());
-        launchBrowser();
+        launchBrowser(browser);
         configureBrowser();
         staticWait(2);
 
@@ -73,32 +79,52 @@ public class BaseClass {
         Logger.info("Action Driver Instance is created for thread " + Thread.currentThread().getId());
     }
 
-    private synchronized void launchBrowser() {
-        String browser = prop.getProperty("browser");
-
-        if(browser.equalsIgnoreCase("chrome")){
-//            driver = new ChromeDriver();
-            ChromeOptions options = new ChromeOptions();
-            options.addArguments("--headless");
-            options.addArguments("--disable-notifications");
-            driver.set(new ChromeDriver(options));
-
-            ExtentManager.registerDriver(getDriver());
-            Logger.info("Chrome driver instance is created");
-        }
-        else if(browser.equalsIgnoreCase("firefox")){
-//            driver = new FirefoxDriver();
-            driver.set(new FirefoxDriver());
-            ExtentManager.registerDriver(getDriver());
-            Logger.info("Firefox driver instance is created");
-        }
-        else if(browser.equalsIgnoreCase("safari")){
-            driver.set(new SafariDriver());
-            ExtentManager.registerDriver(getDriver());
-            Logger.info("Safari driver instance is created");
+    private synchronized void launchBrowser(String browser) {
+//        String browser = prop.getProperty("browser");
+        boolean seleniumGrid = Boolean.parseBoolean(prop.getProperty("seleniumGrid"));
+        String gridURL = prop.getProperty("gridURL");
+        if (seleniumGrid) {
+            try{
+                if (browser.equalsIgnoreCase("chrome")) {
+                    System.out.println("Inside Selenium Grid");
+                    ChromeOptions options = new ChromeOptions();
+                    options.addArguments("--headless", "--disable-gpu", "--window-size=1920,1080");
+                    driver.set(new RemoteWebDriver(new URL(gridURL), options));
+                }
+                else if (browser.equalsIgnoreCase("firefox")) {
+                    FirefoxOptions options = new FirefoxOptions();
+                    options.addArguments("-headless");
+                    driver.set(new RemoteWebDriver(new URL(gridURL), options));
+                }
+                else {
+                    throw new IllegalArgumentException("Browser Not Supported: " + browser);
+                }
+                Logger.info("RemoteWebDriver instance created for Grid in headless mode");
+            } catch (MalformedURLException e) {
+                throw new RuntimeException("Invalid Grid URL", e);
+            }
         }
         else {
-            throw new IllegalArgumentException("browser is invalid or not supported : " + browser);
+            if (browser.equalsIgnoreCase("chrome")) {
+//            driver = new ChromeDriver();
+                ChromeOptions options = new ChromeOptions();
+                options.addArguments("--headless");
+                options.addArguments("--disable-notifications");
+                driver.set(new ChromeDriver(options));
+                ExtentManager.registerDriver(getDriver());
+                Logger.info("Chrome driver instance is created");
+            } else if (browser.equalsIgnoreCase("firefox")) {
+//            driver = new FirefoxDriver();
+                driver.set(new FirefoxDriver());
+                ExtentManager.registerDriver(getDriver());
+                Logger.info("Firefox driver instance is created");
+            } else if (browser.equalsIgnoreCase("safari")) {
+                driver.set(new SafariDriver());
+                ExtentManager.registerDriver(getDriver());
+                Logger.info("Safari driver instance is created");
+            } else {
+                throw new IllegalArgumentException("browser is invalid or not supported : " + browser);
+            }
         }
     }
 

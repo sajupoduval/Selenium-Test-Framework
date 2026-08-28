@@ -3,16 +3,17 @@
     <listeners>
         <listener class-name="com.app.listeners.TestListener"/>
     </listeners>
-    <test name="OrangeAppTest">
+    <test name="OrangeAppTest_chrome">
+        <parameter name="browser" value="chrome"/>
         <classes>
             <class name="com.app.tests.DummyClass"/>
             <class name="com.app.tests.DummyClass2"/>
             <class name="com.app.tests.LoginPageTest"/>
-            <class name="com.app.tests.LoginPageTest"/>
             <class name="com.app.tests.HomePageTest"/>
         </classes>
     </test>
-<!--    <test name="OrangeAppTest2">-->
+<!--    <test name="OrangeAppTest_safari">-->
+<!--        <parameter name="browser" value="safari"/>-->
 <!--        <classes>-->
 <!--            <class name="com.app.tests.DummyClass"/>-->
 <!--            <class name="com.app.tests.DummyClass2"/>-->

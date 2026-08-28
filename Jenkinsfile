@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'maven'
+        maven 'maven_3.9.9' //Jenkins tools reflect
     }
 
 //     environment {
