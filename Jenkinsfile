@@ -5,22 +5,22 @@ pipeline {
         maven 'maven_3.9.9' //Jenkins tools reflect
     }
 
-//     environment {
-//         COMPOSE_PATH = "${WORKSPACE}/docker" // 🔁 Adjust if compose file is elsewhere
-//         SELENIUM_GRID = "true"
-//     }
+     environment {
+         COMPOSE_PATH = "${WORKSPACE}/docker" // 🔁 Adjust if compose file is elsewhere
+         SELENIUM_GRID = "true"
+     }
 
     stages {
-//         stage('Start Selenium Grid via Docker Compose') {
-//             steps {
-//                 script {
-//                     echo "Starting Selenium Grid with Docker Compose..."
-//                     sh "docker compose -f ${COMPOSE_PATH}/docker-compose.yml up -d"
-//                     echo "Waiting for Selenium Grid to be ready..."
-//                     sleep 30 // Add a wait if needed
-//                 }
-//             }
-//         }
+         stage('Start Selenium Grid via Docker Compose') {
+             steps {
+                 script {
+                     echo "Starting Selenium Grid with Docker Compose..."
+                     sh "docker compose -f ${COMPOSE_PATH}/docker-compose.yml up -d"
+                     echo "Waiting for Selenium Grid to be ready..."
+                     sleep 30 // Add a wait if needed
+                 }
+             }
+         }
 
         stage('Checkout') {
             steps {
@@ -30,26 +30,26 @@ pipeline {
 
         stage('Build') {
             steps {
-//                 sh 'mvn clean install -DseleniumGrid=true'
-                sh 'mvn clean install'
+                 sh 'mvn clean install -DseleniumGrid=true'
+//                sh 'mvn clean install'
             }
         }
 
         stage('Test') {
             steps {
-//                 sh "mvn clean test -DseleniumGrid=true"
-                sh "mvn clean test"
+                 sh "mvn clean test -DseleniumGrid=true"
+//                sh "mvn clean test"
             }
         }
 
-//         stage('Stop Selenium Grid') {
-//             steps {
-//                 script {
-//                     echo "Stopping Selenium Grid..."
-//                     sh "docker compose -f ${COMPOSE_PATH}/docker-compose.yml down"
-//                 }
-//             }
-//         }
+         stage('Stop Selenium Grid') {
+             steps {
+                 script {
+                     echo "Stopping Selenium Grid..."
+                     sh "docker compose -f ${COMPOSE_PATH}/docker-compose.yml down"
+                 }
+             }
+         }
 
         stage('Reports') {
             steps {
