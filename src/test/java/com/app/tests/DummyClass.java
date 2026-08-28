@@ -18,7 +18,7 @@ public class DummyClass extends BaseClass {
         assert Objects.equals(title, "OrangeHRM") :"Test Failed - Title Object is not matching";
 
         System.out.println("Test Passed - Title is matching");
-        ExtentManager.logSkip("This test case is skipped");
-        throw new SkipException("Skipping the test as part of Testing");
+//        ExtentManager.logSkip("This test case is skipped");
+//        throw new SkipException("Skipping the test as part of Testing");
     }
 }

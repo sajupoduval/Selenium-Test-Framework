@@ -13,14 +13,19 @@ pipeline {
     stages {
          stage('Start Selenium Grid via Docker Compose') {
              steps {
-                 script {
-                     echo "Starting Selenium Grid with Docker Compose..."
-                     sh "docker compose -f ${COMPOSE_PATH}/docker-compose.yml up -d"
-                     echo "Waiting for Selenium Grid to be ready..."
-                     sleep 30 // Add a wait if needed
+                     script {
+                         withEnv(['PATH+DOCKER=/usr/local/bin']) {
+                             echo "Cleaning up any loose background instances..."
+                             sh "docker compose -f ${COMPOSE_PATH}/docker-compose.yml down"
+
+                             echo "Starting Unified Infrastructure (Grid + App + DB)..."
+                             sh "docker compose -f ${COMPOSE_PATH}/docker-compose.yml up -d"
+                         }
+                         echo "Waiting 45 seconds for the local OrangeHRM database to fully initialize..."
+                         sleep 45
+                     }
                  }
-             }
-         }
+            }
 
         stage('Checkout') {
             steps {

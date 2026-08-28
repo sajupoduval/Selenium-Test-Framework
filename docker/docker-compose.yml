@@ -1,50 +1,5 @@
-# version key is obsolete in newer Docker Compose — safe to remove
 services:
-  chrome:
-    image: selenium/node-chrome:latest
-    shm_size: 2gb
-    deploy:
-      replicas: 1
-    depends_on:
-      - selenium-hub
-    extra_hosts:
-      - "localhost:host-gateway"   # ✅ to map host's localhost inside the container
-    environment:
-      - SE_EVENT_BUS_HOST=selenium-hub
-      - SE_EVENT_BUS_PUBLISH_PORT=4442
-      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-      - SE_NODE_MAX_SESSIONS=1
-
-#  firefox:
-#    image: selenium/node-firefox:4.34.0
-#    shm_size: 2gb
-#    deploy:
-#      replicas: 1
-#    depends_on:
-#      - selenium-hub
-#    extra_hosts:
-#      - "localhost:host-gateway"   # ✅
-#    environment:
-#      - SE_EVENT_BUS_HOST=selenium-hub
-#      - SE_EVENT_BUS_PUBLISH_PORT=4442
-#      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-#      - SE_NODE_MAX_SESSIONS=4
-
-#  edge:
-#    image: selenium/node-edge:4.34.0
-#    shm_size: 2gb
-#    deploy:
-#      replicas: 1
-#    depends_on:
-#      - selenium-hub
-#    extra_hosts:
-#      - "localhost:host-gateway"   # ✅
-#    environment:
-#      - SE_EVENT_BUS_HOST=selenium-hub
-#      - SE_EVENT_BUS_PUBLISH_PORT=4442
-#      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-#      - SE_NODE_MAX_SESSIONS=2
-
+  # 🌐 1. SELENIUM GRID HUB
   selenium-hub:
     image: selenium/hub:latest
     container_name: selenium-hub
@@ -52,3 +7,48 @@ services:
       - "4442:4442"
       - "4443:4443"
       - "4444:4444"
+
+  # 🌐 2. CHROME BROWSER NODE
+  chrome:
+    image: selenium/node-chrome:latest
+    shm_size: 2gb
+    deploy:
+      replicas: 1
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_SESSIONS=1
+
+  # 🗄️ 3. ORANGEHRM DATABASE CONTAINER (Using 8.0 with Emulation)
+  orangehrm-db:
+    image: mysql:8.0
+    container_name: orangehrm-db
+    platform: linux/amd64
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: orangehrm_db
+      MYSQL_USER: orangehrm_user
+      MYSQL_PASSWORD: orangehrm_password
+    volumes:
+      - orangehrm_db_data:/var/lib/mysql
+
+  # 💻 4. ORANGEHRM WEB APPLICATION CONTAINER (Port Swapped)
+  orangehrm-app:
+    image: orangehrm/orangehrm:latest  # Using verified official build
+    container_name: orangehrm-app
+    platform: linux/amd64
+    ports:
+      - "8081:80"  # 🛠️ CHANGED ACCESS PORT TO 8081
+    environment:
+      - ORANGEHRM_DB_HOST=orangehrm-db
+      - ORANGEHRM_DB_USER=orangehrm_user
+      - ORANGEHRM_DB_PASSWORD=orangehrm_password
+      - ORANGEHRM_DB_NAME=orangehrm_db
+    depends_on:
+      - orangehrm-db
+
+volumes:
+  orangehrm_db_data:
